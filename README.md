@@ -20,7 +20,7 @@ libraries were used.
 AI always play second, being the "O" in the game.<br>
 For that reason, the AI main priority is to defend<br>
 against the user possible winning sequence. In case<br>
-there is no possible winning sequece from the use<br>
+there is no possible winning sequece from the user<br>
 (meaning 2/3 of it) AI will search for an available<br>
 winning sequence. 
 
