@@ -1,5 +1,5 @@
 import time
-from random import shuffle
+from random import shuffle, choice
 
 
 class TicTacToe:
@@ -78,34 +78,51 @@ class TicTacToe:
             time.sleep(0.7)
             play = None
 
-            # everytime AI plays it ramdomizes the winning sequence list, to not make ai previsible and exploitable
-            shuffle(self.winning_sequences)
+            if self.play_counter == 1:
+                if 'b2' in self.player_plays:
+                    play = choice(['a1' , 'a3' , 'c1' , 'c3'])
 
-            #AI will defend if player near winning sequence(2/3)
-            for item in self.winning_sequences:
-                played_coords = []
-                non_played_coords = []
-                for coord in item:
-                    if coord in self.player_plays:
-                        played_coords.append(coord)
-                    else:
-                        if coord not in self.ai_plays:
-                            non_played_coords.append(coord)
-                        else: 
-                            continue
-                if len(played_coords) == 2 and len(non_played_coords) == 1:
-                    play = non_played_coords[0]
-                continue
+            else:
+                # everytime AI plays it ramdomizes the winning sequence list, to not make ai previsible and exploitable
+                shuffle(self.winning_sequences)
                 
-            # when not defending AI will search for a possible sequence to win
-            if play == None:
+                #AI will defend if player near winning sequence(2/3)
                 for item in self.winning_sequences:
-                    result = any(elem in self.player_plays for elem in item)
-                    if not result:
-                        for coord in item:
+                    played_coords = []
+                    non_played_coords = []
+                    ai_sequence = []
+                    ai_4win = []
+                    for coord in item:
+                        if coord in self.ai_plays:
+                            ai_sequence.append(coord)
+                        else:
+                            if coord not in self.player_plays:
+                                ai_4win.append(coord)
+                        if coord in self.player_plays:
+                            played_coords.append(coord)
+                        else:
                             if coord not in self.ai_plays:
-                                play = coord
-            
+                                non_played_coords.append(coord)
+                            else: 
+                                continue
+                    if len(ai_sequence) == 2 and len(ai_4win) == 1:
+                        play = ai_4win[0]
+                    if len(played_coords) == 2 and len(non_played_coords) == 1:
+                        play = non_played_coords[0]
+                    continue
+                    
+                # when not defending AI will search for a possible sequence to win
+                if play == None:
+                    for item in self.winning_sequences:
+                        result = any(elem in self.player_plays for elem in item)
+                        if not result:
+                            for coord in item:
+                                if coord not in self.ai_plays:
+                                    play = coord
+
+            if play == None:
+                play = choice(self.all_coords)
+                
             self.get_play(play, 'ai')
             self.played_coords.append(play)
             self.ai_plays.append(play)
