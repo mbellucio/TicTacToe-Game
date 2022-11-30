@@ -109,7 +109,7 @@ class TicTacToe:
                                 continue
                     if len(ai_sequence) == 2 and len(ai_4win) == 1:
                         play = ai_4win[0]
-                    if len(played_coords) == 2 and len(non_played_coords) == 1:
+                    elif len(played_coords) == 2 and len(non_played_coords) == 1:
                         play = non_played_coords[0]
                     continue
                     
