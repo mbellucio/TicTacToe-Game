@@ -81,6 +81,8 @@ class TicTacToe:
             if self.play_counter == 1:
                 if 'b2' in self.player_plays:
                     play = choice(['a1' , 'a3' , 'c1' , 'c3'])
+                else: 
+                    play = 'b2'
 
             else:
                 # everytime AI plays it ramdomizes the winning sequence list, to not make ai previsible and exploitable
