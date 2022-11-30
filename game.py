@@ -17,6 +17,9 @@ class TicTacToe:
             ['a1', 'b2', 'c3'], ['a3', 'b2', 'c1']
         ]
         self.play_counter = 0
+        self.dificulty_levels = ['h', 'm', 'e']
+        self.dificulty = None
+        self.reset = None
 
 
     def print_board(self):
@@ -45,18 +48,26 @@ class TicTacToe:
 
 
     def player_turn(self):
-        p_entry = input("Type coordinates(ex: A1) :> ").lower()
+        p_entry = input("Type coordinates(ex: A1) and 'r' to reset :> ").lower()
+        if p_entry == 'r':
+            self.reset = p_entry
+            return self.end_game()
         if p_entry in self.played_coords:
             print(" This place already been played, choose another one!")
+            return self.player_turn()
+        elif p_entry not in self.all_coords:
+            print("Please enter a valid coordinate")
             return self.player_turn()
         else:
             self.played_coords.append(p_entry)
             self.player_plays.append(p_entry)
             self.all_coords.remove(p_entry)
-        self.get_play(p_entry, 'player')
+            self.get_play(p_entry, 'player')
 
 
     def end_game(self):
+        if self.reset == 'r':
+            return True
         for item in self.winning_sequences:
             result = all(elem in self.ai_plays for elem in item)
             if result:
@@ -78,11 +89,14 @@ class TicTacToe:
             time.sleep(0.7)
             play = None
 
-            if self.play_counter == 1:
+            if self.play_counter == 1 and self.dificulty == 'h':
                 if 'b2' in self.player_plays:
                     play = choice(['a1' , 'a3' , 'c1' , 'c3'])
                 else: 
                     play = 'b2'
+                    
+            elif self.dificulty in ['e', 'm'] and self.play_counter == 1:
+                play = choice(self.all_coords)
 
             else:
                 # everytime AI plays it ramdomizes the winning sequence list, to not make ai previsible and exploitable
@@ -95,11 +109,12 @@ class TicTacToe:
                     ai_sequence = []
                     ai_4win = []
                     for coord in item:
-                        if coord in self.ai_plays:
-                            ai_sequence.append(coord)
-                        else:
-                            if coord not in self.player_plays:
-                                ai_4win.append(coord)
+                        if self.dificulty != 'e':
+                            if coord in self.ai_plays:
+                                ai_sequence.append(coord)
+                            else:
+                                if coord not in self.player_plays:
+                                    ai_4win.append(coord)
                         if coord in self.player_plays:
                             played_coords.append(coord)
                         else:
@@ -131,7 +146,17 @@ class TicTacToe:
             self.all_coords.remove(play)
 
 
+    def set_difficulty(self):
+        mode = input('Please choose a difficulty: "h" for hard, "m" for medium and "e" for easy :>  ').lower()
+        if mode not in self.dificulty_levels:
+            print('Please enter a valid difficulty')
+            return self.set_difficulty()
+        else:
+            self.dificulty = mode
+
+
     def play_game(self):
+        self.set_difficulty()
         self.print_board()
         while not self.end_game():
             self.player_turn()
